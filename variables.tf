@@ -1,46 +1,22 @@
 variable "node_public_ip" {
   type        = string
-  description = "Public IP of compute node for Rancher cluster"
-  default     = ""
+  description = "Public IP address for single node RKE cluster"
+  default     = null
 }
 
 variable "node_internal_ip" {
   type        = string
-  description = "Internal IP of compute node for Rancher cluster"
-  default     = ""
+  description = "Internal IP address for single node RKE cluster"
+  default     = null
 }
 
-# Required
-# This variable is useful to specify multiple nodes for the rancher cluster
-# If this is null, the previous variables node_public_ip and
-# node_internal_ip are used.
-#
-# Example:
-# default = [
-#   {
-#     public_ip = "1.1.1.1",
-#     private_ip = "1.1.1.1",
-#     roles = ["etcd", "controlplane", "worker"]
-#   },
-#   {
-#     public_ip = "2.2.2.2",
-#     private_ip = "2.2.2.2",
-#     roles = ["etcd", "controlplane", "worker"]
-#   },
-#   {
-#     public_ip = "3.3.3.3",
-#     private_ip = "3.3.3.3",
-#     roles = ["etcd", "controlplane", "worker"]
-#   }
-# ]
-#
 variable "rancher_nodes" {
   type = list(object({
-    public_ip = string
+    public_ip  = string
     private_ip = string
-    roles = list(string)
+    roles      = list(string)
   }))
-  default = null
+  default     = null
   description = "List of compute nodes for Rancher cluster"
 }
 
@@ -52,13 +28,19 @@ variable "node_username" {
 variable "ssh_private_key_pem" {
   type        = string
   description = "Private key used for SSH access to the Rancher server cluster node(s)"
-  default = "~/.ssh/id_rsa"
+  default     = null
+}
+
+variable "ssh_agent_auth" {
+  type        = bool
+  description = "Enable SSH agent authentication"
+  default     = true
 }
 
 variable "kubernetes_version" {
   type        = string
   description = "Kubernetes version to use for the RKE cluster"
-  default     = "v1.19.15-rancher1-1"
+  default     = "v1.20.11-rancher1-1"
 }
 
 variable "private_registry_url" {
@@ -80,13 +62,19 @@ variable "private_registry_password" {
 }
 
 variable "cluster_name" {
-  type = string
+  type        = string
   description = "Name for the RKE cluster"
-  default = "rke-demo"
+  default     = "rke-demo"
+}
+
+variable "cluster_yaml" {
+  type        = string
+  description = "cluster.yaml configuration file to apply to the cluster"
+  default     = null
 }
 
 variable "rke_kubeconfig_filename" {
-  type = string
+  type        = string
   description = "Kubeconfig output filename to use"
-  default = "kube_config_cluster.yml"
+  default     = "kube_config_cluster.yml"
 }

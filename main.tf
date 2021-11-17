@@ -1,8 +1,7 @@
-# Provision RKE cluster using the provided nodes
-resource "rke_cluster" "rancher_cluster" {
+resource "rke_cluster" "this" {
   cluster_name = var.cluster_name
 
-  dynamic nodes {
+  dynamic "nodes" {
     for_each = var.rancher_nodes == null ? [1] : []
     content {
       address          = var.node_public_ip
@@ -13,34 +12,34 @@ resource "rke_cluster" "rancher_cluster" {
     }
   }
 
-  dynamic nodes {
+  dynamic "nodes" {
     for_each = var.rancher_nodes != null ? var.rancher_nodes : []
     content {
       address          = nodes.value.public_ip
       internal_address = nodes.value.private_ip
       role             = nodes.value.roles
       user             = var.node_username
-      ssh_key          = file(var.ssh_private_key_pem)
+      ssh_key          = file(pathexpand(var.ssh_private_key_pem))
     }
   }
 
   kubernetes_version = var.kubernetes_version
+  ssh_agent_auth     = var.ssh_agent_auth
+  cluster_yaml       = file(pathexpand(var.cluster_yaml))
 
   dynamic "private_registries" {
-    for_each = var.private_registry_url != null ? [1]: []
+    for_each = var.private_registry_url != null ? [1] : []
     content {
-      url = var.private_registry_url
-      user = var.private_registry_username
-      password = var.private_registry_password
+      url        = var.private_registry_url
+      user       = var.private_registry_username
+      password   = var.private_registry_password
       is_default = true
     }
   }
 }
 
 resource "local_file" "kube_config_yaml" {
-  depends_on = [
-    rke_cluster.rancher_cluster,
-  ]
+  depends_on = [rke_cluster.this]
   filename = format("%s/%s", path.root, var.rke_kubeconfig_filename)
-  content  = rke_cluster.rancher_cluster.kube_config_yaml
+  content  = rke_cluster.this.kube_config_yaml
 }
