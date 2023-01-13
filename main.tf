@@ -25,7 +25,7 @@ resource "rke_cluster" "this" {
 
   kubernetes_version = var.kubernetes_version
   ssh_agent_auth     = var.ssh_agent_auth
-  cluster_yaml       = file(pathexpand(var.cluster_yaml))
+#  cluster_yaml       = file(pathexpand(var.cluster_yaml))
 
   dynamic "private_registries" {
     for_each = var.private_registry_url != null ? [1] : []

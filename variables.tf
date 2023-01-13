@@ -34,7 +34,7 @@ variable "ssh_private_key_pem" {
 variable "ssh_agent_auth" {
   type        = bool
   description = "Enable SSH agent authentication"
-  default     = true
+  default     = false
 }
 
 variable "kubernetes_version" {
