@@ -42,4 +42,5 @@ resource "local_file" "kube_config_yaml" {
   depends_on = [rke_cluster.this]
   filename = format("%s/%s", path.root, var.rke_kubeconfig_filename)
   content  = rke_cluster.this.kube_config_yaml
+  file_permission = "0600"
 }

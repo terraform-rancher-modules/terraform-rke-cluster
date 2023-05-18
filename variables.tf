@@ -40,7 +40,7 @@ variable "ssh_agent_auth" {
 variable "kubernetes_version" {
   type        = string
   description = "Kubernetes version to use for the RKE cluster"
-  default     = "v1.20.11-rancher1-1"
+  default     = "v1.21.14-rancher1-1"
 }
 
 variable "private_registry_url" {
